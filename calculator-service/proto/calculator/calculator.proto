@@ -1,0 +1,25 @@
+
+syntax = "proto3";
+
+package go.micro.calculator; 
+
+message CalculatorResponse {
+  float calculatedValue = 1;
+}
+
+message OperationRequest {
+  float num1 = 1;
+  float num2 = 2;
+}
+
+message GetAverageRequest {
+  repeated float numbers = 1;
+}
+
+
+
+service CalculatorService {
+  rpc AddNumbers (OperationRequest) returns (CalculatorResponse);
+  rpc SubtractNumbers (OperationRequest) returns (CalculatorResponse);
+  rpc GetAverage (GetAverageRequest) returns (CalculatorResponse);
+}
