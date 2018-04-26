@@ -9,6 +9,7 @@ import (
 
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials"
 	"google.golang.org/grpc/reflection"
 )
 
@@ -20,7 +21,12 @@ func main() {
 		log.Fatal(err)
 	}
 
-	s := grpc.NewServer()
+	creds, err := credentials.NewServerTLSFromFile("cert.pem", "key.pem")
+	if err != nil {
+		log.Fatal(err)
+	}
+	opts := []grpc.ServerOption{grpc.Creds(creds)}
+	s := grpc.NewServer(opts...)
 	pb.RegisterCalculatorServiceServer(s, new(calculatorServiceServer))
 
 	reflection.Register(s)
