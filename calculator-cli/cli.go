@@ -4,8 +4,6 @@ import (
 	"fmt"
 	"log"
 
-	"google.golang.org/grpc/credentials"
-
 	pb "go-calculator/calculator-service/proto/calculator"
 
 	"golang.org/x/net/context"
@@ -67,13 +65,14 @@ func calculateAverage(numbers []float32, client pb.CalculatorServiceClient) (res
 }
 
 func connectToServer() pb.CalculatorServiceClient {
-	creds, err := credentials.NewClientTLSFromFile("cert.pem", "")
-	if err != nil {
-		log.Fatal(err)
-	}
-	opts := []grpc.DialOption{grpc.WithTransportCredentials(creds)}
+	//creds, err := credentials.NewClientTLSFromFile("cert.pem", "")
+	//if err != nil {
+	//	log.Fatal(err)
+	//}
+	//opts := []grpc.DialOption{grpc.WithTransportCredentials(creds)}
 	// Set up a connection to the server.
-	conn, err := grpc.Dial(address, opts...)
+	//conn, err := grpc.Dial(address, opts...)
+	conn, err := grpc.Dial(address, grpc.WithInsecure())
 	if err != nil {
 		log.Fatalf("Did not connect: %v", err)
 	}

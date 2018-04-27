@@ -9,7 +9,7 @@ import (
 
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"
-	"google.golang.org/grpc/credentials"
+	//"google.golang.org/grpc/credentials"
 	"google.golang.org/grpc/reflection"
 )
 
@@ -21,12 +21,13 @@ func main() {
 		log.Fatal(err)
 	}
 
-	creds, err := credentials.NewServerTLSFromFile("cert.pem", "key.pem")
-	if err != nil {
-		log.Fatal(err)
-	}
-	opts := []grpc.ServerOption{grpc.Creds(creds)}
-	s := grpc.NewServer(opts...)
+	//creds, err := credentials.NewServerTLSFromFile("cert.pem", "key.pem")
+	//if err != nil {
+	//	log.Fatal(err)
+	//}
+	//opts := []grpc.ServerOption{grpc.Creds(creds)}
+	//s := grpc.NewServer(opts...)
+	s := grpc.NewServer()
 	pb.RegisterCalculatorServiceServer(s, new(calculatorServiceServer))
 
 	reflection.Register(s)
@@ -45,14 +46,14 @@ func (s *calculatorServiceServer) AddNumbers(ctx context.Context, in *pb.Operati
 	sumOfValues := in.Num1 + in.Num2
 	res := &pb.CalculatorResponse{}
 	res.CalculatedValue = sumOfValues
-	fmt.Println(sumOfValues)
+	fmt.Println("AddNumbers operation called, output value: ", res.CalculatedValue)
 	return res, nil
 }
 
 func (s *calculatorServiceServer) SubtractNumbers(ctx context.Context, in *pb.OperationRequest) (*pb.CalculatorResponse, error) {
 	subOfValues := in.Num1 - in.Num2
 	res := &pb.CalculatorResponse{CalculatedValue: subOfValues}
-	fmt.Println(subOfValues)
+	fmt.Println("SubtractNumbers operation called, output value: ", res.CalculatedValue)
 	return res, nil
 
 }
@@ -67,5 +68,6 @@ func (s *calculatorServiceServer) GetAverage(ctx context.Context, in *pb.GetAver
 		avg = sum / float32(len(in.Numbers))
 	}
 	res := &pb.CalculatorResponse{CalculatedValue: avg}
+	fmt.Println("GetAverage operation called, output value: ", res.CalculatedValue)
 	return res, nil
 }
