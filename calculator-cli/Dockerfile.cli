@@ -1,0 +1,8 @@
+FROM golang:latest
+
+RUN mkdir /app
+WORKDIR /app
+ADD calculator-cli /app/calculator-cli
+
+
+CMD ["./calculator-cli"]

@@ -5,7 +5,7 @@ import (
 	"log"
 	"net"
 
-	pb "go-calculator/calculator-service/proto/calculator"
+	pb "github.com/go-calculator/calculator-service/proto/calculator"
 
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"

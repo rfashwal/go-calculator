@@ -4,14 +4,15 @@ import (
 	"fmt"
 	"log"
 
-	pb "go-calculator/calculator-service/proto/calculator"
+	pb "github.com/go-calculator/calculator-service/proto/calculator"
 
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"
 )
 
 const (
-	address = "localhost:9001"
+//docker image ip
+	address = "172.17.0.2:9001"
 )
 
 func main() {
