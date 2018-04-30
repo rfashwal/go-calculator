@@ -1,7 +1,7 @@
 apiVersion: apps/v1beta1
 kind: Deployment
 metadata:
-  name: calculator-cli-deployment
+  name: calculator-cli-deploy
   labels:
     app: calculator
 spec:
@@ -15,20 +15,20 @@ spec:
         app: calculator
     spec:
       containers:
-      - name: calc-cli
-        image: calculator-cli
+      - name: calculator-cli
+        image: rfashwal/calculator-cli
         imagePullPolicy: Never
         ports:
-        - name: calc-cliservice
+        - name: cal-cliservice
           containerPort: 9001
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: calc-cliservice
+  name: cal-cliservice
 spec:
   selector:
     app: calculator
   ports:
   - port: 9001
-    targetPort: calc-cliservice
+    targetPort: cal-cliservice

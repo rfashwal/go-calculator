@@ -1,0 +1,29 @@
+syntax = "proto3";
+package go.micro.calculator;
+
+service EventStore {
+    rpc GetEvents(EventFilter) returns (EventResponse) {}
+    rpc CreateEvent (Event) returns (Response) {}
+}
+
+message Event {
+    string eventId = 1;
+    string eventType = 2;
+    string aggregateId = 3;
+    string aggregateType = 4;
+    string eventData = 5;
+}
+
+message Response {
+    bool success = 1;
+    string error = 2;
+}
+
+message EventFilter {
+    string eventId = 1;
+    string aggregateId = 2;
+}
+
+message EventResponse {
+    repeated Event events = 1;
+}
