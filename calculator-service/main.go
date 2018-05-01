@@ -1,9 +1,11 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"log"
 	"net"
+	"os"
 
 	pb "github.com/go-calculator/calculator-service/proto/calculator"
 
@@ -13,10 +15,16 @@ import (
 	"google.golang.org/grpc/reflection"
 )
 
-const port = ":9001"
+
+type Configuration struct {
+	Port string
+}
+
 
 func main() {
-	lis, err := net.Listen("tcp", port)
+	configuration := getConfiguration()
+
+	lis, err := net.Listen("tcp", configuration.Port)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -27,11 +35,12 @@ func main() {
 	//}
 	//opts := []grpc.ServerOption{grpc.Creds(creds)}
 	//s := grpc.NewServer(opts...)
+
 	s := grpc.NewServer()
 	pb.RegisterCalculatorServiceServer(s, new(calculatorServiceServer))
 
 	reflection.Register(s)
-	log.Println("Starting calculator server on port " + port)
+	log.Println("Starting calculator server on port " + configuration.Port)
 
 	if err := s.Serve(lis); err != nil {
 		log.Fatalf("failed to serve: %v", err)
@@ -70,4 +79,19 @@ func (s *calculatorServiceServer) GetAverage(ctx context.Context, in *pb.GetAver
 	res := &pb.CalculatorResponse{CalculatedValue: avg}
 	fmt.Println("GetAverage operation called, output value: ", res.CalculatedValue)
 	return res, nil
+}
+
+func getConfiguration() Configuration {
+	configuration := Configuration{}
+
+	file, err := os.Open("config.json")
+	if err != nil {
+		log.Fatal(err)
+	}
+	decoder := json.NewDecoder(file)
+	err = decoder.Decode(&configuration)
+	if err != nil {
+		log.Fatal(err)
+	}
+	return configuration
 }

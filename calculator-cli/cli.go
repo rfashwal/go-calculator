@@ -1,8 +1,10 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"log"
+	"os"
 
 	pb "github.com/go-calculator/calculator-service/proto/calculator"
 
@@ -10,10 +12,16 @@ import (
 	"google.golang.org/grpc"
 )
 
-const (
+
+type Configuration struct {
+	Port      string
+	Server_IP string
+}
+
 //docker image ip
-	address = "172.17.0.2:9001"
-)
+//address = "172.17.0.2:9001"
+
+
 
 func main() {
 
@@ -73,7 +81,8 @@ func connectToServer() pb.CalculatorServiceClient {
 	//opts := []grpc.DialOption{grpc.WithTransportCredentials(creds)}
 	// Set up a connection to the server.
 	//conn, err := grpc.Dial(address, opts...)
-	conn, err := grpc.Dial(address, grpc.WithInsecure())
+	configuration := getConfiguration()
+	conn, err := grpc.Dial(configuration.Server_IP+configuration.Port, grpc.WithInsecure())
 	if err != nil {
 		log.Fatalf("Did not connect: %v", err)
 	}
@@ -81,4 +90,19 @@ func connectToServer() pb.CalculatorServiceClient {
 	client := pb.NewCalculatorServiceClient(conn)
 
 	return client
+}
+
+func getConfiguration() Configuration {
+	configuration := Configuration{}
+
+	file, err := os.Open("config.json")
+	if err != nil {
+		log.Fatal(err)
+	}
+	decoder := json.NewDecoder(file)
+	err = decoder.Decode(&configuration)
+	if err != nil {
+		log.Fatal(err)
+	}
+	return configuration
 }
